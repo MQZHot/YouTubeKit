@@ -8,7 +8,7 @@
 import Foundation
 
 @available(iOS 13.0, watchOS 6.0, tvOS 13.0, macOS 10.15, *)
-class InnerTube {
+public class InnerTube {
     
     private struct Client {
         let name: String
@@ -19,9 +19,10 @@ class InnerTube {
         var playerParams: String? = nil
 
         var androidSdkVersion: Int? = nil
+        var deviceModel: String? = nil
         
         var context: Context {
-            return Context(client: InnerTube.Context.ContextClient(clientName: name, clientVersion: version, clientScreen: screen, androidSdkVersion: androidSdkVersion))
+            return Context(client: InnerTube.Context.ContextClient(clientName: name, clientVersion: version, clientScreen: screen, androidSdkVersion: androidSdkVersion, deviceModel: deviceModel))
         }
         
         var headers: [String: String] {
@@ -37,6 +38,7 @@ class InnerTube {
             let clientVersion: String
             let clientScreen: String?
             let androidSdkVersion: Int?
+            let deviceModel: String?
         }
     }
     
@@ -48,8 +50,8 @@ class InnerTube {
         ClientType.webEmbed: Client(name: "WEB_EMBEDDED_PLAYER", version: "1.20220731.00.00", screen: "EMBED", apiKey: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8", userAgent: "Mozilla/5.0"),
         ClientType.androidEmbed: Client(name: "ANDROID_EMBEDDED_PLAYER", version: "18.11.34", screen: "EMBED", apiKey: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8", userAgent: "com.google.android.youtube/18.11.34 (Linux; U; Android 11) gzip"),
         ClientType.tvEmbed: Client(name: "TVHTML5_SIMPLY_EMBEDDED_PLAYER", version: "2.0", screen: "EMBED", apiKey: "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8", userAgent: "Mozilla/5.0"),
-        ClientType.ios: Client(name: "IOS", version: "19.09.3", screen: nil, apiKey: "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc", userAgent: "com.google.ios.youtube/19.09.3 (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)"),
-        ClientType.iosMusic: Client(name: "IOS_MUSIC", version: "5.21", screen: nil, apiKey: "AIzaSyBAETezhkwP0ZWA02RsqT1zu78Fpt0bC_s", userAgent: "com.google.ios.youtubemusic/5.21 (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)"),
+        ClientType.ios: Client(name: "IOS", version: "19.09.3", screen: nil, apiKey: "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc", userAgent: "com.google.ios.youtube/19.09.3 (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)", deviceModel: "iPhone14,3"),
+        ClientType.iosMusic: Client(name: "IOS_MUSIC", version: "5.21", screen: nil, apiKey: "AIzaSyBAETezhkwP0ZWA02RsqT1zu78Fpt0bC_s", userAgent: "com.google.ios.youtubemusic/5.21 (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)", deviceModel: "iPhone14,3"),
         ClientType.mediaConnectFrontend: Client(name: "MEDIA_CONNECT_FRONTEND", version: "0.1", screen: nil, apiKey: "", userAgent: nil)
     ]
     
@@ -70,7 +72,7 @@ class InnerTube {
     
     private let baseURL = "https://www.youtube.com/youtubei/v1"
     
-    init(client: ClientType = .androidMusic, useOAuth: Bool = false, allowCache: Bool = true) {
+    init(client: ClientType = .ios, useOAuth: Bool = false, allowCache: Bool = true) {
         self.context = defaultClients[client]!.context
         self.apiKey = defaultClients[client]!.apiKey
         self.headers = defaultClients[client]!.headers
@@ -143,7 +145,7 @@ class InnerTube {
         return try JSONDecoder().decode(T.self, from: responseData)
     }
     
-    struct VideoInfo: Decodable {
+    public struct VideoInfo: Decodable {
         let playabilityStatus: PlayabilityStatus?
         let streamingData: StreamingData?
         let videoDetails: VideoDetails?
@@ -153,7 +155,7 @@ class InnerTube {
             let reason: String?
         }
 
-        struct VideoDetails: Decodable {
+        public struct VideoDetails: Decodable {
             let videoId: String
             let title: String
             let shortDescription: String
