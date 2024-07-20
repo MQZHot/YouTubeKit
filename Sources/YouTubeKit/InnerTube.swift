@@ -156,10 +156,10 @@ public class InnerTube {
         }
 
         public struct VideoDetails: Decodable {
-            let videoId: String
-            let title: String
-            let shortDescription: String
-            let thumbnail: Thumbnail
+            public let videoId: String
+            public let title: String
+            public let shortDescription: String
+            public let thumbnail: Thumbnail
 
             struct Thumbnail: Decodable {
                 let thumbnails: [ThumbnailMetadata]
